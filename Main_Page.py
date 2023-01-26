@@ -1,8 +1,18 @@
 import streamlit as st
+from graphy import GraphGenerator, SolverWaterDistribution, SolverMilitaryDistribution
 
 
 # Initial page settings
 st.set_page_config(page_title="Main Page", layout="centered", initial_sidebar_state="expanded")
+
+# Instantiating relevant variables throughout the app
+st.session_state.generator = GraphGenerator()
+st.session_state.water_solver = SolverWaterDistribution()
+st.session_state.military_solver = SolverMilitaryDistribution()
+
+st.session_state.water_network = st.session_state.generator.water_network()
+st.session_state.military_network = st.session_state.generator.military_network()
+st.session_state.disabled = False
 
 # Buy me a coffee button
 button = """
