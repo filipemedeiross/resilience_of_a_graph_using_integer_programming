@@ -2,6 +2,9 @@ import PIL
 import numpy as np
 
 
+# Class initialization constants
+FIRE_POWER = 6
+
 # Loading images that will be used in the vertices of the graphs
 files = {"node_water" : "./media/node_water.png",
          "node" : "./media/node.png",

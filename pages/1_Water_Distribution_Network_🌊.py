@@ -1,6 +1,6 @@
 import streamlit as st
 import networkx as nx
-from graphy import plot_water_network, update_flow
+from graphy.utils import plot_water_network, update_flow
 
 
 # Initial page settings
@@ -33,6 +33,8 @@ if colside3.button("Solve"):
     water_network.remove_edges_from(water_solver.edges_to_remove)  # removing edges obtained by the model    
     update_flow(water_network, water_solver.disconnected_nodes)  # updating the flow on nodes
     
+    st.sidebar.info(f"Solver removed {water_solver.objective_value} edges to disconnect destination supply from origin", icon="ℹ️")   
+
 # User entries and plotting the graph
 with st.sidebar:
     form = st.form("user_entries", clear_on_submit=True)
@@ -88,7 +90,7 @@ st.write("""
     The sidebar has the mechanisms for interacting with the graph and in it you can try a solution by choosing edges to be removed. Then you will have as feedback the information if you completed the objective (a viable solution) and if you were successful, your solution will be compared with the optimal one obtained through integer programming.
 """)
 
-st.pyplot(plot_water_network(st.session_state.water_network))
+st.pyplot(plot_water_network(water_network))
 
 with st.expander("More information"):
     st.write(r"""

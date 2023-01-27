@@ -1,5 +1,6 @@
 import streamlit as st
-from graphy import GraphGenerator, SolverWaterDistribution, SolverMilitaryDistribution
+from graphy.generator import GraphGenerator
+from graphy.solvers import SolverWaterDistribution, SolverMilitaryDistribution
 
 
 # Initial page settings
