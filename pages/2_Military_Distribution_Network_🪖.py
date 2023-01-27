@@ -1,6 +1,5 @@
 import streamlit as st
 import networkx as nx
-from graphy.constants import FIRE_POWER
 from graphy.utils import plot_military_network
 
 
@@ -31,7 +30,7 @@ if colside2.button("Update"):
 if colside3.button("Solve"):
     st.session_state.disabled = True
 
-    military_solver.create_model(military_network, FIRE_POWER)
+    military_solver.create_model(military_network, st.session_state.fire_power)
     military_solver.optimize()
     
     military_network.remove_nodes_from(military_solver.nodes_to_remove)  # removing nodes obtained by the model 
@@ -49,9 +48,9 @@ with st.sidebar:
     # Checking if the button was pressed
     if form.form_submit_button("Try", on_click=disabled_attempts):
         # Checking if the firepower limit was violated
-        if sum_endurance(military_network, st.session_state.nodes) <= FIRE_POWER:
+        if sum_endurance(military_network, st.session_state.nodes) <= st.session_state.fire_power:
             # Saving information about the optimal solution
-            military_solver.create_model(military_network, FIRE_POWER)
+            military_solver.create_model(military_network, st.session_state.fire_power)
             military_solver.optimize()
 
             # Perform user attempt
@@ -80,7 +79,7 @@ with st.sidebar:
             else:
                 st.error("You failed to stop provisioning any military units", icon="🚨")
         else:
-            st.error(f"You have exceeded your firepower limit ({FIRE_POWER})", icon="🚨")
+            st.error(f"You have exceeded your firepower limit ({st.session_state.fire_power})", icon="🚨")
 
 # General explanation of the project
 st.markdown("""

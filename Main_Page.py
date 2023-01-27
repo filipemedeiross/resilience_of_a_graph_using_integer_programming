@@ -1,4 +1,5 @@
 import streamlit as st
+from graphy.constants import FIRE_POWER
 from graphy.generator import GraphGenerator
 from graphy.solvers import SolverWaterDistribution, SolverMilitaryDistribution
 
@@ -13,7 +14,9 @@ st.session_state.military_solver = SolverMilitaryDistribution()
 
 st.session_state.water_network = st.session_state.generator.water_network()
 st.session_state.military_network = st.session_state.generator.military_network()
+
 st.session_state.disabled = False
+st.session_state.fire_power = FIRE_POWER
 
 # Buy me a coffee button
 button = """
