@@ -74,4 +74,56 @@ with st.sidebar:
         else:
             st.error("You must stop provisioning from the `origin` node to the `dest` node", icon="🚨")
 
+# General explanation of the project
+st.markdown("""
+<h1 style='text-align: center'>Disconnecting a water distribution network</h1>
+""", unsafe_allow_html=True)
+
+st.markdown("""---""")
+
+st.write("""
+    The objective in this context is to remove pipes (edges) in order to interrupt the water supply from **origin** to **destination**.
+    The origin and destination vertices are the only distinct ones to be displayed in the graph, to differentiate them notice that the destination has an :red[x] in its center.
+
+    The sidebar has the mechanisms for interacting with the graph and in it you can try a solution by choosing edges to be removed. Then you will have as feedback the information if you completed the objective (a viable solution) and if you were successful, your solution will be compared with the optimal one obtained through integer programming.
+""")
+
 st.pyplot(plot_water_network(st.session_state.water_network))
+
+with st.expander("More information"):
+    st.write(r"""
+        Since the problem is represented as a graph $G=(V, E)$ and has origin and destination nodes and edges $(i, j) \in C$ colored red that cannot be removed,
+        let's consider the variables $x_{i}$ $\forall i \in V$ which represents whether the node $i$ is disconnected with respect to the origin and $y_{i, j}$ $\forall (i, j) \in E$ which represents whether the edge $(i, j)$ has been removed.
+        
+        Therefore, we have the following integer programming model:
+
+        $$
+        Min \sum\limits_{(i, j) \in E}y_{i, j}
+        $$
+
+        Subject to:
+
+        $$
+        x_{origin} = 0
+        $$
+
+        $$
+        x_{destination} = 1
+        $$
+
+        $$
+        y_{i, j} \geq x_{i} + x_{j}, \space\space\space \forall (i, j) \in E
+        $$
+
+        $$
+        y_{i, j} = 0, \space\space\space \forall (i, j) \in C
+        $$
+
+        $$
+        x_{i} \in \{0, 1\}, \space\space\space \forall i \in V
+        $$
+
+        $$
+        y_{i, j} \in \{0, 1\}, \space\space\space \forall (i, j) \in E
+        $$
+    """)
