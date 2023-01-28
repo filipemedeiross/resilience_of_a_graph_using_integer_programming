@@ -5,6 +5,7 @@ from mip import Model, xsum, MAXIMIZE
 class SolverWaterDistribution:
     def __init__(self):
         self.model = None
+
         self.x = None
         self.y = None
 
@@ -19,24 +20,21 @@ class SolverWaterDistribution:
         # Create a model
         self.model = Model()  # default is sense MINIMIZE and solver CBC
         
-        # Defining the saving variables
+        # Defining the variables and objective function coefficients
         self.x = x = [self.model.add_var(var_type="B")
-                      for i in network.nodes]
-        self.y = y = {(i, j) : self.model.add_var(var_type="B")
-                      for i, j in network.edges}
-        
-        # Defining the objective function
-        self.model.objective = xsum(y_ij for y_ij in y.values())
+                      for _ in network.nodes]
+        self.y = y = {e : self.model.add_var(obj=1.0, var_type="B")
+                      for e in network.edges}
             
         # Defining the constraints
         self.model += x[origin] == 0
         self.model += x[dest] == 1
         
-        for v, w in network.edges:
+        for v, w, color in network.edges.data("color"):
             self.model += y[v, w] >= x[v] - x[w]
             self.model += y[v, w] >= x[w] - x[v]
             
-            if network[v][w]["color"] == "red":
+            if color == "red":
                 self.model += y[v, w] == 0
     
     def optimize(self):
@@ -58,6 +56,7 @@ class SolverWaterDistribution:
 class SolverMilitaryDistribution:
     def __init__(self):
         self.model = None
+
         self.x = None
         self.y = None
 
@@ -65,23 +64,19 @@ class SolverMilitaryDistribution:
         # Create a model
         self.model = Model(sense=MAXIMIZE)
         
-        # Defining the variables
+        # Defining the variables and objective function coefficients
         self.x = x = [None]*network.number_of_nodes()
         self.y = y = [None]*network.number_of_nodes()
         
-        for i in network.nodes:
-            x[i] = self.model.add_var(var_type="B")
-            y[i] = self.model.add_var(var_type="B")
+        for v, prop in network.nodes.data("node_prop"):
+            x[v] = self.model.add_var(obj=1.0, var_type="B")
+            y[v] = self.model.add_var(var_type="B")
             
-            if network.nodes[i]["node_prop"] == "headquarters":
-                self.model += x[i] == 0
-        
-        # Defining the objective function
-        self.model.objective = xsum(x_i for x_i in x)
+            if prop == "headquarters":
+                self.model += x[v] == 0
         
         # Defining the constraints
-        self.model += xsum(network.nodes[i]["endurance"]*y_i
-                           for i, y_i in enumerate(y)) <= fire_power
+        self.model += xsum(c_i*y[i] for i, c_i in network.nodes.data("endurance")) <= fire_power
         
         for v, w in network.edges:
             self.model += y[v] + y[w] >= x[v] - x[w]
@@ -93,6 +88,10 @@ class SolverMilitaryDistribution:
     @property
     def objective_value(self):
         return self.model.objective_value
+
+    @property
+    def disconnected_nodes(self):
+        return [node for node, var in enumerate(self.x) if var.x]
 
     @property
     def nodes_to_remove(self):

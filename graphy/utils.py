@@ -4,11 +4,11 @@ from .constants import images, pos
 
 
 # Auxiliary function to plot a water distribution network
-def plot_water_network(network):
-    fig, ax = plt.subplots(figsize=(18, 16))
+def plot_water_network(G):
+    fig, ax = plt.subplots(figsize=(17, 15))
 
-    nx.draw_networkx_edges(network, pos, width=6, edge_color=nx.get_edge_attributes(network, "color").values())
-    nx.draw_networkx_edge_labels(network, pos, {edge : str(edge) for edge in network.edges})
+    nx.draw_networkx_edges(G, pos, width=6, edge_color=nx.get_edge_attributes(G, "color").values())
+    nx.draw_networkx_edge_labels(G, pos, {edge : edge for edge in G.edges})
 
     tr_figure = ax.transData.transform
     tr_axes = fig.transFigure.inverted().transform
@@ -16,13 +16,13 @@ def plot_water_network(network):
     icon_size = (ax.get_xlim()[1] - ax.get_xlim()[0]) * 0.005
     icon_center = icon_size / 2.0
 
-    for n in network.nodes:
+    for n, image in G.nodes.data("image"):
         xf, yf = tr_figure(pos[n])
         xa, ya = tr_axes((xf, yf))
 
         a = plt.axes([xa - icon_center, ya - icon_center, icon_size, icon_size])
 
-        a.imshow(network.nodes[n]["image"])
+        a.imshow(image)
         a.axis("off")
 
     ax.axis("off")
@@ -30,11 +30,11 @@ def plot_water_network(network):
     return fig
 
 # Auxiliary function to plot a military distribution network
-def plot_military_network(network):
-    fig, ax = plt.subplots(figsize=(18, 16))
+def plot_military_network(G):
+    fig, ax = plt.subplots(figsize=(17, 15))
 
-    nx.draw_networkx_edges(network, pos, width=6, edge_color="blue")
-    nx.draw_networkx_edge_labels(network, pos, {edge : str(edge) for edge in network.edges})
+    nx.draw_networkx_edges(G, pos, width=6, edge_color="blue")
+    nx.draw_networkx_edge_labels(G, pos, {edge : edge for edge in G.edges})
 
     tr_figure = ax.transData.transform
     tr_axes = fig.transFigure.inverted().transform
@@ -42,16 +42,16 @@ def plot_military_network(network):
     icon_size = (ax.get_xlim()[1] - ax.get_xlim()[0]) * 0.01
     icon_center = icon_size / 2.0
 
-    for n in network.nodes:
+    for n, node in G.nodes.items():
         xf, yf = tr_figure(pos[n])
         xa, ya = tr_axes((xf, yf))
 
-        if network.nodes[n]["node_prop"] == "headquarters":
+        if node["node_prop"] == "headquarters":
             a = plt.axes([xa - 2*icon_center, ya - 2*icon_center, 2*icon_size, 2*icon_size])
         else:
             a = plt.axes([xa - icon_center, ya - icon_center, icon_size, icon_size])
 
-        a.imshow(network.nodes[n]["image"])
+        a.imshow(node["image"])
         a.axis("off")
 
     ax.axis("off")
@@ -59,7 +59,12 @@ def plot_military_network(network):
     return fig
 
 # Auxiliary function to update the flow at the vertices of a water distribution network
-def update_flow(network, nodes):
+def interrupt_flow(G, nodes):
     for node in nodes:
-        network.nodes[node]["flow"] = False
-        network.nodes[node]["image"] = images["node"]
+        G.nodes[node]["flow"] = False
+        G.nodes[node]["image"] = images["node"]
+
+# Auxiliary function to update the provided attribute at the vertices of a military distribution network
+def interrupt_supply(G, nodes):
+    for node in nodes:
+        G.nodes[node]["provided"] = False

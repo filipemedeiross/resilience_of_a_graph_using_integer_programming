@@ -31,6 +31,8 @@ class UnionFind:
 class GraphGenerator:
     def __init__(self, N=100):
         self.N = N  # number os cells (default is a 10x10 grid)
+        self.shape = int(self.N**0.5)
+
         self.edges = self.generate_edges()
 
     def water_network(self):        
@@ -42,11 +44,11 @@ class GraphGenerator:
         G = nx.Graph()
         
         # Adding nodes
-        # Initial value of flow is True because, initially, it is a connected graph
+        # Value of flow is True because, initially, it is a connected graph
         for v in range(self.N):
             G.add_node(v, node_prop=None, flow=True, image=images["node_water"])
         
-        step = 2*(self.N**0.5) + 2
+        step = 2*self.shape + 2
         
         origin = np.random.randint(0, self.N)
         dest = np.random.choice([v for v in range(self.N) if v < origin-step or v > origin+step])
@@ -58,8 +60,7 @@ class GraphGenerator:
         
         # Adding edges
         # Makes sure that the initial graph will be connected
-        # Edges with endpoint at origin or destination are marked as red
-        # This color represents the constraint that prevents the deletion of an edge
+        # Edges with endpoint at origin or dest are marked as red (constraint that prevents the deletion of an edge)
         while forest.n > 1:
             v, w = edges.pop(np.random.randint(0, len(edges)))
             forest.union(v, w)
@@ -79,35 +80,36 @@ class GraphGenerator:
         endurances = np.random.choice(np.arange(1, 4), self.N, [0.2, 0.2, 0.6])
         for v, e in enumerate(endurances):
             G.add_node(v, node_prop=None, endurance=e, provided=True, image=images[f"base_{e}"])
-            
-        headquarters = np.random.randint(0, self.N)
-    
-        G.nodes[headquarters]["node_prop"] = "headquarters"
-        G.nodes[headquarters]["endurance"] = 10000  # headquarters is the most difficult enemy military installation to attack
-        G.nodes[headquarters]["image"] = images["headquarters"]
-        
+
         # Adding edges
         # Makes sure that the initial graph will be connected
         while forest.n > 1:
             v, w = edges.pop(np.random.randint(0, len(edges)))
             forest.union(v, w)
             G.add_edge(v, w)
-            
+
+        # The headquarters is the most difficult enemy military installation to attack
+        h = np.random.randint(0, self.N)
+    
+        G.nodes[h]["node_prop"] = "headquarters"
+        G.nodes[h]["endurance"] = 10000
+        G.nodes[h]["image"] = images["headquarters"]
+
         # Harder to attack military installations adjacent to headquarters
-        for v in G[headquarters]:
+        for v in G[h]:
             G.nodes[v]["node_prop"] = "secure"
             G.nodes[v]["endurance"] = 100
                 
         return G
                 
     def available_edges(self, v):
-        shape = int(self.N**0.5)  # takes into account the dimensions of the grid
-        
         available_edges = []
-        if (v+1) % shape != 0:
+
+        # Takes into account the dimensions of the grid
+        if (v+1) % self.shape != 0:
             available_edges.append((v, v+1))
-        if v+shape < self.N:
-            available_edges.append((v, v+shape))
+        if v+self.shape < self.N:
+            available_edges.append((v, v+self.shape))
 
         return available_edges  # possible edges in cell v
 
