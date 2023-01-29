@@ -58,13 +58,14 @@ def plot_military_network(G):
 
     return fig
 
-# Auxiliary function to update the flow at the vertices of a water distribution network
+# Function to update the flow at the vertices of a water distribution network
 def interrupt_flow(G, nodes):
     for node in nodes:
         G.nodes[node]["flow"] = False
         G.nodes[node]["image"] = images["node"]
 
-# Auxiliary function to update the provided attribute at the vertices of a military distribution network
+# Function to update the provided attribute at the vertices of a military distribution network
 def interrupt_supply(G, nodes):
     for node in nodes:
-        G.nodes[node]["provided"] = False
+        if node in G.nodes:
+            G.nodes[node]["provided"] = False

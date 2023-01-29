@@ -37,7 +37,7 @@ if colside3.button("Solve"):
     st.sidebar.info(f"Solver removed {water_solver.objective_value} edges\
                       to disconnect destination supply from origin", icon="ℹ️")   
 
-# User entries and plotting the graph
+# User entries
 with st.sidebar:
     form = st.form("user_entries", clear_on_submit=True)
 
@@ -63,14 +63,13 @@ with st.sidebar:
         for _, node_dict in water_network.nodes.items():
             if node_dict["node_prop"] == "dest" and node_dict["flow"] == False:
                 win = True
-                solution_gap = len(edges) - water_solver.objective_value
-
-                st.balloons()  # congratulating user who managed to accomplish the goal
-
                 break
 
         if win:
+            solution_gap = len(edges) - water_solver.objective_value
+
             st.success("You have successfully stopped provisioning from the origin to the destination", icon="✅")
+            st.balloons()  # congratulating user who managed to accomplish the goal
             
             if solution_gap:
                 st.warning(f"Your solution was worse than the optimum by {solution_gap} units", icon="⚠️")
