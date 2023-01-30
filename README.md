@@ -15,7 +15,7 @@ graphs created by an automatic graph generator implemented to simulate two diffe
 
 ## Graphy Pack Organization
 ```
-graphy/                                      Top-level package
+graphy/
       __init__.py
       constants.py
       generator.py
@@ -64,8 +64,8 @@ Use the following command to run the app:
 
 ## References
 
-<img src="https://user-images.githubusercontent.com/81262956/215500660-3ba254bd-6b55-4993-a047-473f818fe85b.png" alt="drawing" height="50" width="40"/> ![Open Game Art](<https://opengameart.org/>)
+[<img src="https://user-images.githubusercontent.com/81262956/215500660-3ba254bd-6b55-4993-a047-473f818fe85b.png" alt="drawing" height="50" width="40"/>](<https://opengameart.org/>) Open Game Art
 
-<img src="https://user-images.githubusercontent.com/81262956/215494578-6ebd8cf8-1485-4e69-a335-3b8a68bb18b3.png" alt="drawing" height="25" width="40"/> ![Streamlit Docs](https://docs.streamlit.io/library/api-reference)
+[<img src="https://user-images.githubusercontent.com/81262956/215494578-6ebd8cf8-1485-4e69-a335-3b8a68bb18b3.png" alt="drawing" height="25" width="40"/>](https://docs.streamlit.io/library/api-reference) Streamlit Docs
 
-<img src="https://user-images.githubusercontent.com/81262956/215497265-fe1f539d-4af1-4f90-b015-7cb3013826fb.png" alt="drawing" height="25" width="40"/> ![Networkx Docs](https://networkx.org/documentation/stable/reference/index.html)
+[<img src="https://user-images.githubusercontent.com/81262956/215497265-fe1f539d-4af1-4f90-b015-7cb3013826fb.png" alt="drawing" height="25" width="40"/>](https://networkx.org/documentation/stable/reference/index.html) Networkx Docs
