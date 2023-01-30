@@ -123,11 +123,11 @@ with st.expander("**More information**"):
         $$
 
         $$
-        y_{i, j} \geq x_{i} + x_{j}, \space\space\space \forall (i, j) \in E
+        y_{i, j} \geq x_{i} - x_{j}, \space\space\space \forall (i, j) \in E
         $$
 
         $$
-        y_{i, j} \geq x_{j} + x_{i}, \space\space\space \forall (i, j) \in E
+        y_{i, j} \geq x_{j} - x_{i}, \space\space\space \forall (i, j) \in E
         $$
 
         $$
